@@ -21,7 +21,6 @@ import java.util.Map;
 public class MemberController {
 
     private final MemberService memberService;
-    private final MemberImageService memberImageService;
     private final JWTUtil jwtUtil;
     private final FileUtil fileUtil;
 
@@ -36,8 +35,6 @@ public class MemberController {
 
         claims.put("accessToken", jwtAccessToken);
         claims.put("refreshToken", jwtRefreshToken);
-
-        log.info("memberDTO:"+memberDTO.getGenreNames().get(0));
 
         return claims;
     }

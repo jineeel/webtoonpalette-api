@@ -42,7 +42,6 @@ public class WebtoonSearchImpl extends QuerydslRepositorySupport implements Webt
         List<Webtoon> list = query.fetch();
         long total = query.fetchCount();
 
-
         return new PageImpl<>(list, pageable, total);
 
     }
@@ -72,6 +71,7 @@ public class WebtoonSearchImpl extends QuerydslRepositorySupport implements Webt
         if (finCond) {
             return null;
         }
+
         return webtoon.updateDay.notLike("finished");
     }
 
