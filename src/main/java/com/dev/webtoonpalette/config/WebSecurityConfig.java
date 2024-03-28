@@ -54,10 +54,6 @@ public class WebSecurityConfig {
                                 .userService((customOAuth2UserService)))
                         .successHandler(customSuccessHandler));
 
-//        http.authorizeHttpRequests(((auth) ->
-//                auth.requestMatchers("/").permitAll()
-//                        .anyRequest().authenticated()));
-
         http.exceptionHandling(config -> {
             config.accessDeniedHandler(new CustomAccessDeniedHandler());
         });
@@ -68,7 +64,9 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-
+    /**
+     * CORS 설정
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 

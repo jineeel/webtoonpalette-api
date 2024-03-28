@@ -55,7 +55,9 @@ public class APIRefreshController {
 
     }
 
-    // refreshToken 유효시간 계산
+    /**
+     * refreshToken 유효시간 계산
+     */
     public boolean checkTime(Integer exp){
 
         Date expDate = new Date((long) exp*(1000));
@@ -66,6 +68,9 @@ public class APIRefreshController {
 
     }
 
+    /**
+     * 토큰 만료 체크
+     */
     public boolean checkExpiredToken(String token){
 
         try {

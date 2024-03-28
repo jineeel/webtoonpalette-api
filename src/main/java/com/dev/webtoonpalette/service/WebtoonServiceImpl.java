@@ -20,6 +20,9 @@ public class WebtoonServiceImpl implements WebtoonService{
 
     private final WebtoonRepository webtoonRepository;
 
+    /**
+     * 조건에 따른 웹툰 List를 반환 메서드
+     */
     @Override
     public PageResponseDTO<WebtoonResponse> getList(PageRequestDTO pageRequestDTO){
         Page<Webtoon> result = webtoonRepository.searchList(pageRequestDTO);
@@ -39,10 +42,36 @@ public class WebtoonServiceImpl implements WebtoonService{
         return responseDTO;
     }
 
+    /**
+     * 웹툰 하나만 조회하는 메서드
+     */
     @Override
     public WebtoonResponse get(Long id){
         Webtoon webtoon = webtoonRepository.findById(id).orElseThrow();
         return entityToDto(webtoon);
+    }
+
+
+    /**
+     * 검색 기능을 통해 검색된 웹툰 리스트를 반환하는 메서드
+     */
+    @Override
+    public PageResponseDTO<WebtoonResponse> getSearch(PageRequestDTO pageRequestDTO) {
+        Page<Webtoon> result = webtoonRepository.search(pageRequestDTO);
+
+        List<WebtoonResponse> dtoList = result
+                .get()
+                .map(webtoon -> entityToDto(webtoon))
+                .collect(Collectors.toList());
+
+        PageResponseDTO<WebtoonResponse> responseDTO =
+                PageResponseDTO.<WebtoonResponse>withAll()
+                        .dtoList(dtoList)
+                        .pageRequestDTO(pageRequestDTO)
+                        .total(result.getTotalElements())
+                        .build();
+
+        return responseDTO;
     }
 
 }

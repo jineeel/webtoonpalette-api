@@ -21,6 +21,10 @@ public class ApiService {
 
     private final WebtoonRepository webtoonRepository;
 
+    /**
+     * 웹툰 OPEN API 호출하여 DB에 저장하는 메서드
+     * 초기 사용 후 사용하지 않는다.
+     */
     public void getApi(String jsonData){
         try{
             JSONObject jObj;
@@ -65,6 +69,9 @@ public class ApiService {
         }
     }
 
+    /**
+     * OPEN API에서 제공하는 플랫폼 별 웹툰 수를 계산하는 메서드
+     */
     public int getTotalCount(String jsonData){
         int result = 0;
 

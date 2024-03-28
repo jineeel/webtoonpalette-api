@@ -24,14 +24,18 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final JWTUtil jwtUtil;
 
+    /**
+     * 로그인 성공 Handler
+     */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        //OAuth2User
-        CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
 
+        CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
         MemberDTO memberDTO = OauthUserToDTO(customUserDetails);
+
         Map<String, Object> claims = memberDTO.getClaims();
 
+        // AccessToken과 RefreshToken을 생성하여 claims에 추가한다.
         String accessToken = jwtUtil.createJwt(claims, 10);
         String refreshToken = jwtUtil.createJwt(claims, 60*24);
 
@@ -41,16 +45,16 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Gson gson = new Gson();
 
         Long id = (Long) claims.get("id");
-
         String jsonStr = gson.toJson(claims);
 
         response.setContentType("application/json; charset=UTF-8");
 
         PrintWriter printWriter = response.getWriter();
         printWriter.println(jsonStr);
-        response.sendRedirect("http://localhost:3000/member/redirect?id="+id);
 
+        response.sendRedirect("http://localhost:3000/member/redirect?id="+id);
     }
+
     public MemberDTO OauthUserToDTO(CustomOAuth2User customOAuth2User){
 
         MemberDTO memberDTO = MemberDTO.builder()

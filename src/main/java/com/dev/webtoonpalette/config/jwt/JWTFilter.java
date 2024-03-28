@@ -29,14 +29,14 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
 
+    /**
+     * JWT 경로별 필터링
+     */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        if(request.getMethod().equals("OPTIONS")){
-            return true;
-        }
-
         String path = request.getRequestURI();
 
+        // /api/member 와 /api/webtoon 경로는 JWT 필터링 하지 않는다.
         if(path.startsWith("/api/member/") || path.startsWith("/api/webtoon/")){
             return true;
         }
@@ -44,6 +44,9 @@ public class JWTFilter extends OncePerRequestFilter {
         return false;
     }
 
+    /**
+     * JWT 문자열 검사
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,

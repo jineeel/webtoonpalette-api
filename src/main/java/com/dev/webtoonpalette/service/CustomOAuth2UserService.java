@@ -23,6 +23,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final MemberRepository memberRepository;
 
+    /**
+     * OAuth2 인증된 사용자의 정보를 DB에 저장하는 메서드
+     */
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
@@ -53,12 +56,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         Optional<Member> result = memberRepository.findByProviderId(providerId);
 
+        // 이미 등록된 사용자
         if(result.isPresent()){
             MemberDTO memberDTO = entityToDTO(result.get());
             log.info("existed.........................."+memberDTO);
             return new CustomOAuth2User(memberDTO);
         }
 
+        // DB에 등록되지 않은 사용자는 새로 등록해준다.
         Member member = makeMember(username, nickname, social, providerId);
         memberRepository.save(member);
         MemberDTO memberDTO = entityToDTO(member);
@@ -66,6 +71,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return new CustomOAuth2User(memberDTO);
     }
 
+    /**
+     * Member를 생성하는 메서드
+     */
     public Member makeMember(String username, String nickname, String social, String providerId){
 
         Member member = Member.builder()

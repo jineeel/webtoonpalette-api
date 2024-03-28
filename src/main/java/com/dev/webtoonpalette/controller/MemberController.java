@@ -24,6 +24,9 @@ public class MemberController {
     private final JWTUtil jwtUtil;
     private final FileUtil fileUtil;
 
+    /**
+     * 회원 정보 가져오기
+     */
     @GetMapping("/{id}")
     public Map<String,Object> getMember (@PathVariable("id") Long id){
 
@@ -39,6 +42,9 @@ public class MemberController {
         return claims;
     }
 
+    /**
+     * 회원 정보 수정
+     */
     @PutMapping("/{id}")
     public MemberDTO modifyMember (@PathVariable("id")Long id, MemberDTO memberDTO){
 
@@ -51,19 +57,21 @@ public class MemberController {
         MemberDTO oldMemberDTO = memberService.getMember(id);
         MultipartFile file = memberDTO.getFile();
 
+        // 사용자가 프로필 사진을 새로 추가하지 않았을 경우 이전 파일을 그대로 쓴다.
         if(file == null) {
             uploadFileName = memberDTO.getUploadFileName();
             oldFileName = oldMemberDTO.getUploadFileName();
-
-        }else{
+         }
+        // 사용자가 프로필 사진을 새로 추가 하였을 경우 새로 파일을 저장한다.
+        else{
             uploadFileName = fileUtil.saveFile(file);
             oldFileName = oldMemberDTO.getUploadFileName();
         }
 
         MemberDTO result = memberService.modify(memberDTO, uploadFileName, oldFileName, isChangeImage);
 
+        // 이전 프로필 사진이 존재한다면 이미지 파일 삭제
         if(oldFileName != null && isChangeImage){
-            log.info("------oldFile DELETE-----");
             String removeFile = oldFileName;
             fileUtil.deleteFile(removeFile);
         }
@@ -71,6 +79,9 @@ public class MemberController {
     }
 
 
+    /**
+     * 프로필 사진 보기
+     */
     @GetMapping("/view/{fileName}")
     public ResponseEntity<Resource> viewFileGet(@PathVariable("fileName") String fileName){
         return fileUtil.getFile(fileName);

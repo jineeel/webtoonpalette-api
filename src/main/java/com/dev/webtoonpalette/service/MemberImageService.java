@@ -15,6 +15,9 @@ public class MemberImageService {
 
     private final MemberImageRepository memberImageRepository;
 
+    /**
+     * 프로필 사진 이미지 이름을 새로 저장하는 메서드
+     */
     public MemberImage saveMemberImage(Member member, String uploadFileName) {
         MemberImage memberImage = MemberImage.builder()
                 .fileName(uploadFileName)
@@ -24,6 +27,9 @@ public class MemberImageService {
 
     }
 
+    /**
+     * 프로필 사진 이미지 이름을 수정하는 메서드
+     */
     public MemberImage modifyMemberImage(Long id, String uploadFileName ){
         MemberImage memberImage = memberImageRepository.findById(id).orElseThrow();
         memberImage.changeMemberImage(uploadFileName);
@@ -31,6 +37,9 @@ public class MemberImageService {
         return memberImageRepository.save(memberImage);
     }
 
+    /**
+     * 프로필 사진 이미지 이름을 삭제하는 메서드
+     */
     public void deleteMemberImage(String oldFileName){
 
         memberImageRepository.deleteByFileName(oldFileName);

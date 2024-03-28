@@ -22,7 +22,9 @@ public class JWTUtil {
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    //JWT 생성
+    /**
+     * JWT 생성
+     */
     public String createJwt(Map<String,Object> valueMap, int min) {
 
         String jwtStr = Jwts.builder()
@@ -35,7 +37,9 @@ public class JWTUtil {
         return jwtStr;
     }
 
-    //유효시간 검증
+    /**
+     * 토큰 유효시간 검증
+     */
     public static Map<String, Object> validateToken(String token) {
         Map<String, Object> claim = null;
         try{

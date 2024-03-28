@@ -12,6 +12,8 @@ public interface WebtoonService {
 
     WebtoonResponse get(Long id);
 
+    PageResponseDTO<WebtoonResponse> getSearch(PageRequestDTO pageRequestDTO);
+
     default WebtoonResponse entityToDto(Webtoon webtoon){
         WebtoonResponse webtoonResponse = WebtoonResponse.builder()
                 .id(webtoon.getId())

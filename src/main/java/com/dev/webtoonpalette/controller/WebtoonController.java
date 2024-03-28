@@ -36,4 +36,12 @@ public class WebtoonController {
     }
 
 
+    /**
+     * 웹툰 검색
+     */
+    @GetMapping("/search")
+    public PageResponseDTO<WebtoonResponse> getSearch(PageRequestDTO pageRequestDTO){
+        return webtoonService.getSearch(pageRequestDTO);
+    }
+
 }

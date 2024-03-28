@@ -25,4 +25,5 @@ public class Favorite {
     @JoinColumn(name = "webtoon_id")
     private Webtoon webtoon;
 
+    // TODO Palette 추가
 }

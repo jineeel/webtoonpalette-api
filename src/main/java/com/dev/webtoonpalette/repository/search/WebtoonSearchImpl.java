@@ -25,8 +25,31 @@ public class WebtoonSearchImpl extends QuerydslRepositorySupport implements Webt
 
     private QWebtoon webtoon = QWebtoon.webtoon;
 
+    /**
+     * 웹툰 검색 조회
+     */
+    @Override
+    public Page<Webtoon> search(PageRequestDTO pageRequestDTO){
+        JPQLQuery<Webtoon> query = queryFactory.selectFrom(webtoon)
+                .where(keywordEq(pageRequestDTO.getSearchKeyword()));
+
+        Pageable pageable = PageRequest.of(
+                pageRequestDTO.getPage()-1,
+                pageRequestDTO.getSize(),
+                Sort.by("fanCount").descending());
+        this.getQuerydsl().applyPagination(pageable, query);
+        List<Webtoon> list = query.fetch();
+
+        long total = query.fetchCount();
+        return new PageImpl<>(list,pageable,total);
+    }
+
+    /**
+     * 웹툰 조회
+     */
     @Override
     public Page<Webtoon> searchList(PageRequestDTO pageRequestDTO){
+
         JPQLQuery<Webtoon> query = queryFactory.selectFrom(webtoon)
                 .where(updateDayEq(pageRequestDTO.getUpdateDay()),
                         genreEq(pageRequestDTO.getGenre()),
@@ -35,7 +58,9 @@ public class WebtoonSearchImpl extends QuerydslRepositorySupport implements Webt
                         finEq(pageRequestDTO.isFin()));
 
         Pageable pageable = PageRequest.of(
-                pageRequestDTO.getPage()-1, pageRequestDTO.getSize(), sortByValue(pageRequestDTO.getValue()));
+                pageRequestDTO.getPage()-1,
+                pageRequestDTO.getSize(),
+                Sort.by("fanCount").descending());
 
         this.getQuerydsl().applyPagination(pageable, query);
 
@@ -82,13 +107,11 @@ public class WebtoonSearchImpl extends QuerydslRepositorySupport implements Webt
         return webtoon.id.ne(idCond);
     }
 
-    private Sort sortByValue(String value) {
-
-        if (value.equals("today") || value.equals("genre")) {
-            return Sort.by("id").ascending();
-        } else if (value.equals("rank") || value.equals("platform") || value.equals("detail")) {
-            return Sort.by("fanCount").descending();
+    private BooleanExpression keywordEq(String keywordCond){
+        if (keywordCond.equals("")){
+            return webtoon.searchKeyword.like(keywordCond);
         }
-        return null;
+        return webtoon.searchKeyword.contains(keywordCond);
     }
+
 }

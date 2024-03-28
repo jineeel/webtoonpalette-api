@@ -12,7 +12,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * 웹툰 OPEN API 호출하여 DB 저장하는 CONTROLLER
+ * 웹툰 OPEN API 호출하여 DB에 저장하는 CONTROLLER
+ * 초기 사용 후 사용하지 않는다.
  */
 @RequiredArgsConstructor
 @RestController
@@ -34,7 +35,6 @@ public class ApiController {
 
         apiService.getApi(result);
 
-//        return result;
     }
 
     /**

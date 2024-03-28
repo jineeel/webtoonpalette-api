@@ -30,4 +30,6 @@ public class PageRequestDTO {
     private String value;
 
     private Long id;
+
+    private String searchKeyword;
 }
