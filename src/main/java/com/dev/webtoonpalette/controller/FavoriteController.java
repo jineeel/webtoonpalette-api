@@ -1,7 +1,6 @@
 package com.dev.webtoonpalette.controller;
 
-import com.dev.webtoonpalette.dto.FavoriteDTO;
-import com.dev.webtoonpalette.repository.FavoriteRepository;
+import com.dev.webtoonpalette.dto.*;
 import com.dev.webtoonpalette.service.FavoriteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -45,10 +44,12 @@ public class FavoriteController {
         return Map.of("result", result);
     }
 
-    //TODO 고객 별 좋아요 조회
-    @GetMapping("/member/{memberId}")
-    public int getMemberFavorite(){
-        return 0;
+    /**
+     * 회원이 좋아요 누른 웹툰 조회
+     */
+    @GetMapping("/{memberId}")
+    public PageResponseDTO<WebtoonResponseDTO> getMemberFavoriteWebtoon(@PathVariable("memberId") Long memberId, PageRequestDTO pageRequestDTO){
+        return favoriteService.getMemberFavoriteWebtoon(memberId, pageRequestDTO);
     }
 
     //TODO 웹툰 좋아요 수 조회

@@ -1,10 +1,8 @@
 package com.dev.webtoonpalette.service;
 
 import com.dev.webtoonpalette.domain.Favorite;
-import com.dev.webtoonpalette.domain.Member;
-import com.dev.webtoonpalette.domain.MemberImage;
-import com.dev.webtoonpalette.dto.FavoriteDTO;
-import com.dev.webtoonpalette.dto.MemberDTO;
+import com.dev.webtoonpalette.domain.Webtoon;
+import com.dev.webtoonpalette.dto.*;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -13,6 +11,7 @@ public interface FavoriteService {
     FavoriteDTO addFavorite(FavoriteDTO favoriteDTO);
     Long getFavorite(FavoriteDTO favoriteDTO);
     void deleteFavorite(Long id);
+    PageResponseDTO<WebtoonResponseDTO> getMemberFavoriteWebtoon(Long memberId, PageRequestDTO pageRequestDTO);
 
     default FavoriteDTO entityToDTO(Favorite favorite){
 
@@ -24,5 +23,4 @@ public interface FavoriteService {
 
         return favoriteDTO;
     }
-
 }

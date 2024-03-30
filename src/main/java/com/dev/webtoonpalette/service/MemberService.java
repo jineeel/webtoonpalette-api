@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface MemberService {
 
     MemberDTO getMember(Long id);
-
     MemberDTO modify(MemberDTO memberDTO, String uploadFileName, String oldFileName, boolean isChangeImage);
 
     default MemberDTO entityToDTO(Member member){

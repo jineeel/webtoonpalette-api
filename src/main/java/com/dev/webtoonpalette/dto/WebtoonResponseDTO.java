@@ -1,6 +1,5 @@
 package com.dev.webtoonpalette.dto;
 
-
 import com.dev.webtoonpalette.constant.Genre;
 import com.dev.webtoonpalette.domain.Webtoon;
 import lombok.AllArgsConstructor;
@@ -12,8 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WebtoonResponse {
-
+public class WebtoonResponseDTO {
     private Long id;
 
     private String title;
@@ -40,19 +38,6 @@ public class WebtoonResponse {
 
     private int fanCount;
 
-    public WebtoonResponse(Webtoon webtoon) {
-        this.id = webtoon.getId();
-        this.title = webtoon.getTitle();
-        this.author = webtoon.getAuthor();
-        this.url = webtoon.getUrl();
-        this.img = webtoon.getImg();
-        this.platform = webtoon.getPlatform();
-        this.updateDay = webtoon.getUpdateDay();
-        this.rest = webtoon.getRest();
-        this.adult = webtoon.getAdult();
-        this.genre = webtoon.getGenre();
-        this.likeCount = webtoon.getLikeCount();
-        this.searchKeyword = webtoon.getSearchKeyword();
-        this.fanCount = webtoon.getFanCount();
-    }
+    private Long favoriteId;
+
 }

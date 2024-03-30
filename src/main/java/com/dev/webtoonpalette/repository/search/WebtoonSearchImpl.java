@@ -1,11 +1,16 @@
 package com.dev.webtoonpalette.repository.search;
 
 import com.dev.webtoonpalette.constant.Genre;
+import com.dev.webtoonpalette.domain.Favorite;
+import com.dev.webtoonpalette.domain.QFavorite;
 import com.dev.webtoonpalette.domain.QWebtoon;
 import com.dev.webtoonpalette.domain.Webtoon;
 import com.dev.webtoonpalette.dto.PageRequestDTO;
+import com.dev.webtoonpalette.repository.WebtoonRepository;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
@@ -13,6 +18,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Log4j2
 public class WebtoonSearchImpl extends QuerydslRepositorySupport implements WebtoonSearch {
@@ -24,38 +30,32 @@ public class WebtoonSearchImpl extends QuerydslRepositorySupport implements Webt
     }
 
     private QWebtoon webtoon = QWebtoon.webtoon;
+    private QFavorite favorite = QFavorite.favorite;
 
     /**
-     * 웹툰 검색 조회
+     * 조건에 따른 웹툰 리스트 조회
      */
     @Override
-    public Page<Webtoon> search(PageRequestDTO pageRequestDTO){
-        JPQLQuery<Webtoon> query = queryFactory.selectFrom(webtoon)
-                .where(keywordEq(pageRequestDTO.getSearchKeyword()));
+    public Page<Tuple> searchList(PageRequestDTO pageRequestDTO){
 
-        Pageable pageable = PageRequest.of(
-                pageRequestDTO.getPage()-1,
-                pageRequestDTO.getSize(),
-                Sort.by("fanCount").descending());
-        this.getQuerydsl().applyPagination(pageable, query);
-        List<Webtoon> list = query.fetch();
-
-        long total = query.fetchCount();
-        return new PageImpl<>(list,pageable,total);
-    }
-
-    /**
-     * 웹툰 조회
-     */
-    @Override
-    public Page<Webtoon> searchList(PageRequestDTO pageRequestDTO){
-
-        JPQLQuery<Webtoon> query = queryFactory.selectFrom(webtoon)
-                .where(updateDayEq(pageRequestDTO.getUpdateDay()),
+        JPQLQuery<Tuple> query = queryFactory.select(
+                        webtoon,
+                        favorite.id
+                )
+                .from(webtoon)
+                .leftJoin(favorite)
+                .on(
+                        favorite.webtoon.id.eq(webtoon.id)
+                        .and(pageRequestDTO.getMemberId() != null ? favorite.member.id.eq(pageRequestDTO.getMemberId()) : favorite.member.isNull())
+                )
+                .where(
+                        updateDayEq(pageRequestDTO.getUpdateDay()),
                         genreEq(pageRequestDTO.getGenre()),
                         platformEq(pageRequestDTO.getPlatform()),
                         idEq(pageRequestDTO.getId()),
-                        finEq(pageRequestDTO.isFin()));
+                        finEq(pageRequestDTO.isFin()),
+                        keywordEq(pageRequestDTO.getSearchKeyword())
+                );
 
         Pageable pageable = PageRequest.of(
                 pageRequestDTO.getPage()-1,
@@ -64,10 +64,33 @@ public class WebtoonSearchImpl extends QuerydslRepositorySupport implements Webt
 
         this.getQuerydsl().applyPagination(pageable, query);
 
-        List<Webtoon> list = query.fetch();
+        List<Tuple> list = query.fetch();
         long total = query.fetchCount();
 
         return new PageImpl<>(list, pageable, total);
+    }
+
+    @Override
+    public Page<Tuple> searchFavorite(List<Long> webtoonIds, PageRequestDTO pageRequestDTO, Long memberId) {
+
+        JPQLQuery<Tuple> query = queryFactory.select(webtoon, favorite.id)
+                .from(webtoon)
+                .join(favorite).on(webtoon.id.eq(favorite.webtoon.id))
+                .where(webtoon.id.in(webtoonIds),
+                       favorite.member.id.eq(memberId),
+                       genreEq(pageRequestDTO.getGenre()))
+                .orderBy(favorite.id.desc());
+
+        Pageable pageable = PageRequest.of(
+                pageRequestDTO.getPage()-1,
+                pageRequestDTO.getSize());
+
+        query = this.getQuerydsl().applyPagination(pageable, query);
+
+        List<Tuple> resultList = query.fetch();
+        long total = query.fetchCount();
+
+        return new PageImpl<>(resultList, pageable, total);
 
     }
 
@@ -77,6 +100,7 @@ public class WebtoonSearchImpl extends QuerydslRepositorySupport implements Webt
         }
         return webtoon.updateDay.eq(updateDayCond);
     }
+
 
     private BooleanExpression genreEq(Genre genreCond) {
         if (genreCond == null || genreCond == Genre.ALL) {
@@ -108,9 +132,13 @@ public class WebtoonSearchImpl extends QuerydslRepositorySupport implements Webt
     }
 
     private BooleanExpression keywordEq(String keywordCond){
-        if (keywordCond.equals("")){
+        if (keywordCond == null){
+            return null;
+        }
+        else if(keywordCond.equals("")){
             return webtoon.searchKeyword.like(keywordCond);
         }
+
         return webtoon.searchKeyword.contains(keywordCond);
     }
 

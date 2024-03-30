@@ -1,8 +1,8 @@
 package com.dev.webtoonpalette.controller;
 
+import com.dev.webtoonpalette.dto.WebtoonResponseDTO;
 import com.dev.webtoonpalette.dto.PageRequestDTO;
 import com.dev.webtoonpalette.dto.PageResponseDTO;
-import com.dev.webtoonpalette.dto.WebtoonResponse;
 import com.dev.webtoonpalette.service.WebtoonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -23,7 +23,7 @@ public class WebtoonController {
      * 웹툰 리스트
      */
     @GetMapping("/list")
-    public PageResponseDTO<WebtoonResponse> getList(PageRequestDTO pageRequestDTO){
+    public PageResponseDTO<WebtoonResponseDTO> getList(PageRequestDTO pageRequestDTO){
         return webtoonService.getList(pageRequestDTO);
     }
 
@@ -31,7 +31,7 @@ public class WebtoonController {
      * 웹툰 상세 페이지
      */
     @GetMapping("/{id}")
-    public WebtoonResponse get(@PathVariable("id") Long id){
+    public WebtoonResponseDTO get(@PathVariable("id") Long id){
         return webtoonService.get(id);
     }
 
@@ -40,8 +40,8 @@ public class WebtoonController {
      * 웹툰 검색
      */
     @GetMapping("/search")
-    public PageResponseDTO<WebtoonResponse> getSearch(PageRequestDTO pageRequestDTO){
-        return webtoonService.getSearch(pageRequestDTO);
+    public PageResponseDTO<WebtoonResponseDTO> getSearch(PageRequestDTO pageRequestDTO){
+        return webtoonService.getList(pageRequestDTO);
     }
 
 }

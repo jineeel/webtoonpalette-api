@@ -3,11 +3,13 @@ package com.dev.webtoonpalette.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+@NoArgsConstructor
 @Data
 public class PageResponseDTO<E> {
 
