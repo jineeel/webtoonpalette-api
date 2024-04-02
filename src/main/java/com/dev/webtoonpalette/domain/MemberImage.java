@@ -19,7 +19,7 @@ public class MemberImage {
 
     private String fileName;
 
-    @OneToOne(mappedBy = "memberImage")
+    @OneToOne(mappedBy = "memberImage", fetch = FetchType.LAZY)
     private Member member;
 
     public void changeMemberImage(String fileName){

@@ -1,7 +1,6 @@
 package com.dev.webtoonpalette.dto;
 
 import com.dev.webtoonpalette.constant.Genre;
-import com.dev.webtoonpalette.domain.Webtoon;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WebtoonResponseDTO {
+public class WebtoonDTO {
     private Long id;
 
     private String title;
@@ -39,5 +38,4 @@ public class WebtoonResponseDTO {
     private int fanCount;
 
     private Long favoriteId;
-
 }

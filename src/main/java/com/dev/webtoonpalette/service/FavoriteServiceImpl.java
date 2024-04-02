@@ -52,12 +52,14 @@ public class FavoriteServiceImpl implements FavoriteService{
     public Long getFavorite(FavoriteDTO favoriteDTO) {
 
         Optional<Favorite> favorite = favoriteRepository.findByMemberIdAndWebtoonId(favoriteDTO.getMemberId(), favoriteDTO.getWebtoonId());
-
+        log.info("ㅇdpd엥~~~~~~~~~");
         if(favorite.isPresent()){
+            log.info("dndndndndssssssssssssss");
             return favorite.get().getId();
         }else{
             return 0L;
         }
+//        return 0L;
     }
 
     /**
@@ -72,7 +74,7 @@ public class FavoriteServiceImpl implements FavoriteService{
      * 회원이 좋아요를 누른 웹툰 리스트를 조회하는 메서드
      */
     @Override
-    public PageResponseDTO<WebtoonResponseDTO> getMemberFavoriteWebtoon(Long memberId, PageRequestDTO pageRequestDTO) {
+    public PageResponseDTO<WebtoonDTO> getMemberFavoriteWebtoon(Long memberId, PageRequestDTO pageRequestDTO) {
         List<Favorite> favoriteList = favoriteRepository.findByMemberId(memberId);
 
         List<Long> webtoonIds = favoriteList.stream()
@@ -83,16 +85,16 @@ public class FavoriteServiceImpl implements FavoriteService{
 
         Page<Tuple> result = webtoonRepository.searchFavorite(webtoonIds, pageRequestDTO, memberId);
 
-        List<WebtoonResponseDTO> dtoList = result.getContent().stream()
+        List<WebtoonDTO> dtoList = result.getContent().stream()
                 .map(tuple -> {
                     Webtoon webtoon = tuple.get(0, Webtoon.class);
                     Long favoriteId = tuple.get(1, Long.class);
-                    return webtoonService.entityToDtoFavoriteId(webtoon,favoriteId);
+                    return webtoonService.entityToDtoMember(webtoon,favoriteId);
                 })
                 .collect(Collectors.toList());
 
-        PageResponseDTO<WebtoonResponseDTO> responseDTO =
-                PageResponseDTO.<WebtoonResponseDTO>withAll()
+        PageResponseDTO<WebtoonDTO> responseDTO =
+                PageResponseDTO.<WebtoonDTO>withAll()
                         .dtoList(dtoList)
                         .pageRequestDTO(pageRequestDTO)
                         .total(result.getTotalElements())

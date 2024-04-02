@@ -1,18 +1,19 @@
 package com.dev.webtoonpalette.service;
 
 import com.dev.webtoonpalette.domain.Webtoon;
-import com.dev.webtoonpalette.dto.WebtoonResponseDTO;
+import com.dev.webtoonpalette.dto.WebtoonDTO;
 import com.dev.webtoonpalette.dto.PageRequestDTO;
 import com.dev.webtoonpalette.dto.PageResponseDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface WebtoonService {
-    PageResponseDTO<WebtoonResponseDTO> getList(PageRequestDTO pageRequestDTO);
-    WebtoonResponseDTO get(Long id);
+    PageResponseDTO<WebtoonDTO> getListMember(PageRequestDTO pageRequestDTO);
+    PageResponseDTO<WebtoonDTO> getList(PageRequestDTO pageRequestDTO);
+    WebtoonDTO get(Long id);
 
-    default WebtoonResponseDTO entityToDto(Webtoon webtoon){
-        WebtoonResponseDTO webtoonResponseDTO = WebtoonResponseDTO.builder()
+    default WebtoonDTO entityToDto(Webtoon webtoon){
+        WebtoonDTO webtoonDTO = WebtoonDTO.builder()
                 .id(webtoon.getId())
                 .title(webtoon.getTitle())
                 .author(webtoon.getAuthor())
@@ -27,11 +28,11 @@ public interface WebtoonService {
                 .searchKeyword(webtoon.getSearchKeyword())
                 .fanCount(webtoon.getFanCount())
                 .build();
-        return webtoonResponseDTO;
+        return webtoonDTO;
     }
 
-    default WebtoonResponseDTO entityToDtoFavoriteId(Webtoon webtoon, Long favoriteId){
-        WebtoonResponseDTO webtoonResponseDTO = WebtoonResponseDTO.builder()
+    default WebtoonDTO entityToDtoMember(Webtoon webtoon, Long favoriteId){
+        WebtoonDTO webtoonDTO = WebtoonDTO.builder()
                 .id(webtoon.getId())
                 .title(webtoon.getTitle())
                 .author(webtoon.getAuthor())
@@ -47,7 +48,7 @@ public interface WebtoonService {
                 .fanCount(webtoon.getFanCount())
                 .favoriteId(favoriteId)
                 .build();
-        return webtoonResponseDTO;
+        return webtoonDTO;
     }
 
 }

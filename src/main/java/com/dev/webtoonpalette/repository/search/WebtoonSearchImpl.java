@@ -33,10 +33,39 @@ public class WebtoonSearchImpl extends QuerydslRepositorySupport implements Webt
     private QFavorite favorite = QFavorite.favorite;
 
     /**
-     * 조건에 따른 웹툰 리스트 조회
+     * 조건에 따른 웹툰 리스트 조회 - 비회원
      */
     @Override
-    public Page<Tuple> searchList(PageRequestDTO pageRequestDTO){
+    public Page<Webtoon> searchList(PageRequestDTO pageRequestDTO) {
+
+        JPQLQuery<Webtoon> query = queryFactory.selectFrom(webtoon)
+                .where(
+                        updateDayEq(pageRequestDTO.getUpdateDay()),
+                        genreEq(pageRequestDTO.getGenre()),
+                        platformEq(pageRequestDTO.getPlatform()),
+                        idEq(pageRequestDTO.getId()),
+                        finEq(pageRequestDTO.isFin()),
+                        keywordEq(pageRequestDTO.getSearchKeyword())
+                );
+
+        Pageable pageable = PageRequest.of(
+                pageRequestDTO.getPage()-1,
+                pageRequestDTO.getSize(),
+                Sort.by("fanCount").descending());
+
+        this.getQuerydsl().applyPagination(pageable, query);
+
+        List<Webtoon> list = query.fetch();
+        long total = query.fetchCount();
+
+        return new PageImpl<>(list, pageable, total);
+    }
+
+    /**
+     * 조건에 따른 웹툰 리스트 조회 - 회원
+     */
+    @Override
+    public Page<Tuple> searchListMember(PageRequestDTO pageRequestDTO){
 
         JPQLQuery<Tuple> query = queryFactory.select(
                         webtoon,
@@ -45,8 +74,8 @@ public class WebtoonSearchImpl extends QuerydslRepositorySupport implements Webt
                 .from(webtoon)
                 .leftJoin(favorite)
                 .on(
-                        favorite.webtoon.id.eq(webtoon.id)
-                        .and(pageRequestDTO.getMemberId() != null ? favorite.member.id.eq(pageRequestDTO.getMemberId()) : favorite.member.isNull())
+                        favorite.webtoon.id.eq(webtoon.id),
+                        favorite.member.id.eq(pageRequestDTO.getMemberId())
                 )
                 .where(
                         updateDayEq(pageRequestDTO.getUpdateDay()),

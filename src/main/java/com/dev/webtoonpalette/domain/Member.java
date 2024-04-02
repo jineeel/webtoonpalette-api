@@ -33,7 +33,7 @@ public class Member {
     @Column(unique = true)
     private String providerId;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_image_id")
     private MemberImage memberImage;
 

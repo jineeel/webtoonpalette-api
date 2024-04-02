@@ -1,8 +1,8 @@
 package com.dev.webtoonpalette.controller;
 
-import com.dev.webtoonpalette.dto.WebtoonResponseDTO;
 import com.dev.webtoonpalette.dto.PageRequestDTO;
 import com.dev.webtoonpalette.dto.PageResponseDTO;
+import com.dev.webtoonpalette.dto.WebtoonDTO;
 import com.dev.webtoonpalette.service.WebtoonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -23,15 +23,22 @@ public class WebtoonController {
      * 웹툰 리스트
      */
     @GetMapping("/list")
-    public PageResponseDTO<WebtoonResponseDTO> getList(PageRequestDTO pageRequestDTO){
-        return webtoonService.getList(pageRequestDTO);
+    public PageResponseDTO<WebtoonDTO> getList(PageRequestDTO pageRequestDTO){
+        // 비회원
+        if(pageRequestDTO.getMemberId() == null){
+            return webtoonService.getList(pageRequestDTO);
+        }
+        // 회원 (좋아요)
+        else{
+            return webtoonService.getListMember(pageRequestDTO);
+        }
     }
 
     /**
      * 웹툰 상세 페이지
      */
     @GetMapping("/{id}")
-    public WebtoonResponseDTO get(@PathVariable("id") Long id){
+    public WebtoonDTO get(@PathVariable("id") Long id){
         return webtoonService.get(id);
     }
 
@@ -40,8 +47,13 @@ public class WebtoonController {
      * 웹툰 검색
      */
     @GetMapping("/search")
-    public PageResponseDTO<WebtoonResponseDTO> getSearch(PageRequestDTO pageRequestDTO){
-        return webtoonService.getList(pageRequestDTO);
+    public PageResponseDTO<WebtoonDTO> getSearch(PageRequestDTO pageRequestDTO){
+
+        if(pageRequestDTO.getMemberId() == null){
+            return webtoonService.getList(pageRequestDTO);
+        }else{
+            return webtoonService.getListMember(pageRequestDTO);
+        }
     }
 
 }

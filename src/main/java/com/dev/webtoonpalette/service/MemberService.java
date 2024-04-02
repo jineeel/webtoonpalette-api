@@ -3,7 +3,6 @@ package com.dev.webtoonpalette.service;
 import com.dev.webtoonpalette.domain.Member;
 import com.dev.webtoonpalette.domain.MemberImage;
 import com.dev.webtoonpalette.dto.MemberDTO;
-import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional

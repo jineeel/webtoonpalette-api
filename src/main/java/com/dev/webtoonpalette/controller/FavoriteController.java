@@ -48,7 +48,7 @@ public class FavoriteController {
      * 회원이 좋아요 누른 웹툰 조회
      */
     @GetMapping("/{memberId}")
-    public PageResponseDTO<WebtoonResponseDTO> getMemberFavoriteWebtoon(@PathVariable("memberId") Long memberId, PageRequestDTO pageRequestDTO){
+    public PageResponseDTO<WebtoonDTO> getMemberFavoriteWebtoon(@PathVariable("memberId") Long memberId, PageRequestDTO pageRequestDTO){
         return favoriteService.getMemberFavoriteWebtoon(memberId, pageRequestDTO);
     }
 

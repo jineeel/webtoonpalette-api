@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface WebtoonSearch {
-    Page<Tuple> searchList(PageRequestDTO pageRequestDTO);
+    Page<Webtoon> searchList(PageRequestDTO pageRequestDTO);
+    Page<Tuple> searchListMember(PageRequestDTO pageRequestDTO);
     Page<Tuple> searchFavorite(List<Long> webtoonIds, PageRequestDTO pageRequestDTO, Long memberId);
 }
