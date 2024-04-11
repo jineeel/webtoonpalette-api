@@ -1,7 +1,7 @@
 spring:
   datasource:
-    url: jdbc:mariadb://localhost:3306/webtoondb
-    username: root
+    url: jdbc:mariadb://218.148.64.128:3306/webtoondb
+    username: chihwan
     password: 123456
     driver-class-name: org.mariadb.jdbc.Driver
 
